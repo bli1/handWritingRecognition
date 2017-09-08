@@ -1,8 +1,9 @@
 ///////////////////////////////////////////////////////////////////////////
 //
 //	Hand Writing digits Recognition
-//
-//	#3 testing
+//		#1 classification
+//		#2 training
+//		#3 testing
 //
 ///////////////////////////////////////////////////////////////////////////
 
@@ -19,9 +20,9 @@
 
 const int UNIT = 20;
 const int MIN = 10;
-const int INIT = 0;
 
-// main	   ////////////////////////////////////////////////////////////////////
+// classification	   ////////////////////////////////////////////////////////
+
 int classification()
 {
 
@@ -42,8 +43,6 @@ int classification()
 	std::cout << std::endl << " digits: " << std::endl
 		<< "'0', '1', '2', '3', '4', '5', '6', '7', '8', '9' "
 		<< std::endl << std::endl;
-
-	std::vector<int> digits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
 	///	load and process image	/////////////////////////////////////////////////
 
@@ -113,17 +112,36 @@ int classification()
 	//	Image show to check whether contours cover items properly 
 	cv::imshow("img_init", img_init);
 
-	int key_finish = cv::waitKey(0);
+	return 0;
+}
 
-	if (key_finish == 27)
-	{
-		return 0;
-	}
+//	training		//////////////////////////////////////////////////////////////////
+
+int training()
+{
+	//	loading classification.xml and images.xml	//////////////////////////////////
+	cv::Mat classification;
+	cv::Mat img_float_flat_total;
+
+	cv::FileStorage classification_file_storage("../classification.xml", cv::FileStorage::READ);
+	classification_file_storage["classification"] >> classification;
+	classification_file_storage.release();
+
+	cv::FileStorage img_float_flat_total_file_storage("images.xml", cv::FileStorage::READ);
+	img_float_flat_total_file_storage["images"] >> img_float_flat_total;
+	img_float_flat_total_file_storage.release();
+
+	// trainning	///////////////////////////////////////////////////////////////
+	cv::Ptr<cv::ml::KNearest> k_nearest(cv::ml::KNearest::create());
+
+	k_nearest->train(img_float_flat_total, cv::ml::ROW_SAMPLE, classification);
+	k_nearest->save("k_nearest.yml");
+	std::cout << std::endl;
 
 	return 0;
 }
 
-int main() 
+int testing() 
 {
 	cv::Mat testing_init;
 	cv::Mat testing_grayscale;
@@ -131,9 +149,47 @@ int main()
 	cv::Mat testing_thresh;
 	cv::Mat testing_thresh_copy;
 
-	
-
+	cv::Mat classification;
+	cv::Mat hirarchy;
 
 	return 0;
+}
+
+int main()
+{
+	int option_key=0;
+	std::cout 
+		<< "///////////////////////////////////////////////////////////////////////////" << std::endl
+		<< "//" << std::endl
+		<<"//	Hand Writing digits Recognition " << std::endl
+		<<"//		1 classification " << std::endl
+		<<"//		2 training " << std::endl
+		<<"//		3 testing " << std::endl
+		<<"// " << std::endl
+		<<"///////////////////////////////////////////////////////////////////////////" <<std::endl;
+	while(std::cin >> option_key)
+	{
+
+		std::cout
+			<< "///////////////////////////////////////////////////////////////////////////" << std::endl
+			<< "//" << std::endl
+			<< "//	Hand Writing digits Recognition " << std::endl
+			<< "//		1 classification " << std::endl
+			<< "//		2 training " << std::endl
+			<< "//		3 testing " << std::endl
+			<< "// " << std::endl
+			<< "///////////////////////////////////////////////////////////////////////////" << std::endl;
+
+		switch (option_key) {
+		case 1:
+			classification();
+		case 2:
+			training();
+		case 3:
+			testing();
+		case 0:
+			return 0;
+		}
+	}
 
 }
