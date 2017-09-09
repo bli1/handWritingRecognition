@@ -40,9 +40,9 @@ int classification()
 	std::vector<std::vector<cv::Point>> output_contours;////
 	std::vector<cv::Vec4i> output_hierarchy;			////for find contour
 
-	std::cout << std::endl << " digits: " << std::endl
-		<< "'0', '1', '2', '3', '4', '5', '6', '7', '8', '9' "
-		<< std::endl << std::endl;
+	//std::cout << std::endl << " digits: " << std::endl
+	//	<< "'0', '1', '2', '3', '4', '5', '6', '7', '8', '9' "
+	//	<< std::endl << std::endl;
 
 	///	load and process image	/////////////////////////////////////////////////
 
@@ -80,7 +80,7 @@ int classification()
 		{
 			cv::Rect boundary = cv::boundingRect(output_contours[i]);	// extract data from contour[i]
 
-			std::cout << boundary.y / 100;					// contour[i] y digit
+			//std::cout << boundary.y / 100;					// contour[i] y digit
 
 			classification.push_back(boundary.y / 100);					// append
 
@@ -108,9 +108,11 @@ int classification()
 	img_float_flat_total_file_storage << "images" << img_float_flat_total;
 	img_float_flat_total_file_storage.release();
 
-
+	std::cout << std::endl;
+	std::cout << "Classification finished.";
+	std::cout << std::endl;
 	//	Image show to check whether contours cover items properly 
-	cv::imshow("img_init", img_init);
+
 
 	return 0;
 }
@@ -138,6 +140,12 @@ int training()
 	k_nearest->save("k_nearest.yml");
 	std::cout << std::endl;
 
+
+	std::cout << std::endl;
+	std::cout << "Training finished.";
+	std::cout << std::endl;
+
+
 	return 0;
 }
 
@@ -152,44 +160,53 @@ int testing()
 	cv::Mat classification;
 	cv::Mat hirarchy;
 
+	std::cout << std::endl;
+	std::cout << "Testing finished.";
+	std::cout << std::endl;
+	 
 	return 0;
 }
 
 int main()
 {
 	int option_key=0;
-	std::cout 
+	std::cout
+		<< std::endl
 		<< "///////////////////////////////////////////////////////////////////////////" << std::endl
 		<< "//" << std::endl
-		<<"//	Hand Writing digits Recognition " << std::endl
-		<<"//		1 classification " << std::endl
-		<<"//		2 training " << std::endl
-		<<"//		3 testing " << std::endl
-		<<"// " << std::endl
-		<<"///////////////////////////////////////////////////////////////////////////" <<std::endl;
+		<< "//	Hand Writing digits Recognition " << std::endl
+		<< "//		1 classification " << std::endl
+		<< "//		2 training " << std::endl
+		<< "//		3 testing " << std::endl
+		<<"//		4 exit"		<<std::endl
+		<< "// " << std::endl
+		<< "///////////////////////////////////////////////////////////////////////////" << std::endl
+		<< " Please input an option (between 1 to 3): ";
+		
+
 	while(std::cin >> option_key)
 	{
+		if (option_key == 1)
+			classification();
+		else if (option_key == 2)
+			training();
+		else if (option_key == 3)
+			training();
+		else if (option_key == 4)
+			return 0;
 
 		std::cout
+			<< std::endl
 			<< "///////////////////////////////////////////////////////////////////////////" << std::endl
 			<< "//" << std::endl
 			<< "//	Hand Writing digits Recognition " << std::endl
 			<< "//		1 classification " << std::endl
 			<< "//		2 training " << std::endl
 			<< "//		3 testing " << std::endl
+			<< "//		4 exit" << std::endl
 			<< "// " << std::endl
-			<< "///////////////////////////////////////////////////////////////////////////" << std::endl;
-
-		switch (option_key) {
-		case 1:
-			classification();
-		case 2:
-			training();
-		case 3:
-			testing();
-		case 0:
-			return 0;
-		}
+			<< "///////////////////////////////////////////////////////////////////////////" << std::endl
+			<< " Please input an option (between 1 to 3): ";
 	}
 
 }
